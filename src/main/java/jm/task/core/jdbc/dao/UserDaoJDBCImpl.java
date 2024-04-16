@@ -8,18 +8,24 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UserDaoJDBCImpl extends Util implements UserDao {
-private final Connection connection = getConnection();
+public class UserDaoJDBCImpl implements UserDao {
+    private final String sqlCommandCreate = "CREATE TABLE `users` ( id int NOT NULL AUTO_INCREMENT," +
+            " name varchar(45) NOT NULL, lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
+    private final String sqlCommandDrop = "drop table Users";
+    private final String sqlCommandRemove = "DELETE from Users where ID=?";
+    private final String sqlCommandSave = "insert into users (name, lastName, age) values (?,?,?)";
+    private final String sqlCommandGetUsers = "select * from users";
+    private final String sqlCommandClean = "DELETE from Users";
+    private final Connection connection = Util.getConnection();
+
     public UserDaoJDBCImpl() {
 
     }
 
     // создание таблицы
     public void createUsersTable() {
-        String sqlCommand = "CREATE TABLE `users` ( id int NOT NULL AUTO_INCREMENT, name varchar(45) NOT NULL," +
-                " lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sqlCommand);
+            statement.executeUpdate(sqlCommandCreate);
             System.out.println("Таблица создана");
         } catch (SQLException e) {
             System.out.println("Таблица уже была создана");
@@ -28,9 +34,8 @@ private final Connection connection = getConnection();
 
     // удаление таблицы
     public void dropUsersTable() {
-        String sqlCommand="drop table Users";
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sqlCommand);
+            statement.executeUpdate(sqlCommandDrop);
             System.out.println("таблица удалена");
         } catch (SQLException e) {
             System.out.println("удалить не удалось");
@@ -39,8 +44,7 @@ private final Connection connection = getConnection();
 
     // добавление User в таблицу
     public void saveUser(String name, String lastName, byte age) {
-        String sqlCommand = "insert into users (name, lastName, age) values (?,?,?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommandSave)) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
@@ -53,8 +57,7 @@ private final Connection connection = getConnection();
 
     // удаление User из таблицы по Id
     public void removeUserById(long id) {
-        String sqlCommand="DELETE from Users where ID=?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommandRemove)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -64,10 +67,9 @@ private final Connection connection = getConnection();
 
     // получение всех User из таблицы
     public List<User> getAllUsers() {
-        String sqlCommand="select * from users";
         List<User> userArrayList = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sqlCommand);
+            ResultSet resultSet = statement.executeQuery(sqlCommandGetUsers);
             while (resultSet.next()) {
                 User users = new User();
                 users.setId(resultSet.getLong("id"));
@@ -84,8 +86,7 @@ private final Connection connection = getConnection();
 
     // очистка содержания таблицы
     public void cleanUsersTable() {
-        String sqlCommand="DELETE from Users";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommandClean)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("удалить не удалось");

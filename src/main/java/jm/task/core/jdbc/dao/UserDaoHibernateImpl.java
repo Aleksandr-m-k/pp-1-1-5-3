@@ -13,14 +13,13 @@ public class UserDaoHibernateImpl implements UserDao {
 
     }
 
-
     @Override
     public void createUsersTable() {
+        final String sqlCommandCreate = "CREATE TABLE `Users` ( id int NOT NULL AUTO_INCREMENT, name varchar(45) NOT NULL," +
+                " lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
-            String sqlCommand = "CREATE TABLE `Users` ( id int NOT NULL AUTO_INCREMENT, name varchar(45) NOT NULL," +
-                    " lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
-            session.createSQLQuery(sqlCommand).executeUpdate();
+            session.createSQLQuery(sqlCommandCreate).executeUpdate();
             transaction.commit();
             System.out.println("Таблица создана");
         } catch (Exception e) {
@@ -31,10 +30,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        String sqlCommand = "drop table Users";
+        final String sqlCommandDrop = "drop table Users";
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
-            session.createSQLQuery(sqlCommand).executeUpdate();
+            session.createSQLQuery(sqlCommandDrop).executeUpdate();
             transaction.commit();
             System.out.println("Таблица удалена");
         } catch (Exception e) {
@@ -74,18 +73,16 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        String SQLCommand = "from User";
+        final String sqlCommandGetUsers = "select * from users";
         List<User> users = null;
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
-            users = session.createQuery(SQLCommand).getResultList();// указывается не имя таблицы, а имя КЛАССА
+            users = session.createQuery(sqlCommandGetUsers).getResultList();// указывается не имя таблицы, а имя КЛАССА
             System.out.println("получен список всех пользователей!!!");
             for (User user : users) {
                 System.out.println(user);
             }
             transaction.commit();
-
-
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Ошибка при формировании списка");
@@ -95,10 +92,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        String sqlCommand = "DELETE from Users";
+        final String sqlCommandClean = "DELETE from Users";
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
-            session.createSQLQuery(sqlCommand).executeUpdate();
+            session.createSQLQuery(sqlCommandClean).executeUpdate();
             transaction.commit();
             System.out.println("таблица очищена");
 

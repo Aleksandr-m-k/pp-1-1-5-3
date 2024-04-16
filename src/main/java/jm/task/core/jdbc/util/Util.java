@@ -14,7 +14,7 @@ public class Util {
     private static final String DB_PASSWORD = "Master1985%#";
     private static Connection connection = null;
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         try {
             DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
         } catch (SQLException e) {
@@ -28,8 +28,10 @@ public class Util {
         }
         return connection;
     }
-public static SessionFactory sessionFactory;
-    public static SessionFactory buildSessionFactory(){
+
+    public static SessionFactory sessionFactory;
+
+    public static SessionFactory buildSessionFactory() {
         try {
             sessionFactory = new Configuration()
                     .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect")
@@ -42,11 +44,12 @@ public static SessionFactory sessionFactory;
                     .setProperty("hibernate.current_session_context_class", "thread")
                     .addAnnotatedClass(User.class).buildSessionFactory();
 
-        } catch ( HibernateException e){
+        } catch (HibernateException e) {
             e.printStackTrace();
         }
         return sessionFactory;
     }
+
     public static void sessionFactoryClose() {
         sessionFactory.close();
     }
