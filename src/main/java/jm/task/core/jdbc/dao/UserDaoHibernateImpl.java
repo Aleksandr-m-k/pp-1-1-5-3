@@ -9,17 +9,21 @@ import java.util.List;
 import static jm.task.core.jdbc.util.Util.sessionFactory;
 
 public class UserDaoHibernateImpl implements UserDao {
+    private static final String SQL_COMMAND_CREATE = "CREATE TABLE `Users` ( id int NOT NULL AUTO_INCREMENT, name varchar(45) NOT NULL," +
+            " lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
+    private static final String SQL_COMMAND_DROP = "drop table Users";
+    private static final String SQL_COMMAND_GET_USERS = "select * from users";
+    private static final String SQL_COMMAND_CLEAN = "DELETE from Users";
+
     public UserDaoHibernateImpl() {
 
     }
 
     @Override
     public void createUsersTable() {
-        final String sqlCommandCreate = "CREATE TABLE `Users` ( id int NOT NULL AUTO_INCREMENT, name varchar(45) NOT NULL," +
-                " lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
-            session.createSQLQuery(sqlCommandCreate).executeUpdate();
+            session.createSQLQuery(SQL_COMMAND_CREATE).executeUpdate();
             transaction.commit();
             System.out.println("Таблица создана");
         } catch (Exception e) {
@@ -30,10 +34,9 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        final String sqlCommandDrop = "drop table Users";
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
-            session.createSQLQuery(sqlCommandDrop).executeUpdate();
+            session.createSQLQuery(SQL_COMMAND_DROP).executeUpdate();
             transaction.commit();
             System.out.println("Таблица удалена");
         } catch (Exception e) {
@@ -73,11 +76,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        final String sqlCommandGetUsers = "select * from users";
         List<User> users = null;
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
-            users = session.createQuery(sqlCommandGetUsers).getResultList();// указывается не имя таблицы, а имя КЛАССА
+            users = session.createQuery(SQL_COMMAND_GET_USERS).getResultList();// указывается не имя таблицы, а имя КЛАССА
             System.out.println("получен список всех пользователей!!!");
             for (User user : users) {
                 System.out.println(user);
@@ -92,10 +94,9 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        final String sqlCommandClean = "DELETE from Users";
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
-            session.createSQLQuery(sqlCommandClean).executeUpdate();
+            session.createSQLQuery(SQL_COMMAND_CLEAN).executeUpdate();
             transaction.commit();
             System.out.println("таблица очищена");
 
