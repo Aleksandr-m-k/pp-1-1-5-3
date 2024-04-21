@@ -1,6 +1,7 @@
 package jm.task.core.jdbc;
 
 import jm.task.core.jdbc.dao.UserDao;
+import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
 import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
 import jm.task.core.jdbc.util.Util;
 
@@ -11,8 +12,18 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         // реализуйте алгоритм здесь
         Util util = new Util();
-        util.getConnection();
-        UserDao userDao = new UserDaoJDBCImpl();
+        util.buildSessionFactory();
+        UserDaoHibernateImpl userDaoHibernate=new UserDaoHibernateImpl();
+       userDaoHibernate.createUsersTable();
+       userDaoHibernate.saveUser("alex","smith",(byte) 38);
+       userDaoHibernate.saveUser("alex","smith",(byte) 38);
+       userDaoHibernate.getAllUsers();
+       userDaoHibernate.removeUserById(2l);
+       userDaoHibernate.cleanUsersTable();
+       userDaoHibernate.dropUsersTable();
+
+
+     UserDao userDao = new UserDaoJDBCImpl();
 
         userDao.createUsersTable();
 

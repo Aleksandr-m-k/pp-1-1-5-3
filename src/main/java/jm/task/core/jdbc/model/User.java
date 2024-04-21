@@ -3,14 +3,14 @@ package jm.task.core.jdbc.model;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table (name = "Users")
 public class User {
     @Id
-    @Column(name = "id")
+    @Column (name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column (name = "name")
     private String name;
 
     @Column
