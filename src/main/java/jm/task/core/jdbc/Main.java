@@ -13,16 +13,16 @@ public class Main {
         // реализуйте алгоритм здесь
         Util util = new Util();
         util.buildSessionFactory();
-        UserDaoHibernateImpl userDaoHibernate=new UserDaoHibernateImpl();
-       userDaoHibernate.createUsersTable();
-       userDaoHibernate.saveUser("alex","smith",(byte) 38);
-       userDaoHibernate.saveUser("alex","smith",(byte) 38);
-       userDaoHibernate.getAllUsers();
-       userDaoHibernate.removeUserById(2l);
-       userDaoHibernate.cleanUsersTable();
-       userDaoHibernate.dropUsersTable();
+        UserDaoHibernateImpl userDaoHibernate = new UserDaoHibernateImpl();
+        userDaoHibernate.createUsersTable();
+        userDaoHibernate.saveUser("alex", "smith", (byte) 38);
+        userDaoHibernate.saveUser("alex", "smith", (byte) 38);
+        userDaoHibernate.getAllUsers();
+        userDaoHibernate.removeUserById(1l);
+        userDaoHibernate.cleanUsersTable();
+        userDaoHibernate.dropUsersTable();
 
-
+/*
      UserDao userDao = new UserDaoJDBCImpl();
 
         userDao.createUsersTable();
@@ -37,6 +37,6 @@ public class Main {
         System.out.println(userDao.getAllUsers());
         userDao.cleanUsersTable();
         System.out.println(userDao.getAllUsers());
-        userDao.dropUsersTable();
+        userDao.dropUsersTable();*/
     }
 }
