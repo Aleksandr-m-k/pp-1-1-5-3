@@ -1,6 +1,7 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -9,9 +10,9 @@ import java.util.List;
 import static jm.task.core.jdbc.util.Util.sessionFactory;
 
 public class UserDaoHibernateImpl implements UserDao {
-    private static final String SQL_COMMAND_CREATE = "CREATE TABLE `Users` ( id int NOT NULL AUTO_INCREMENT, name varchar(45) NOT NULL," +
+    private static final String SQL_COMMAND_CREATE = "CREATE TABLE IF NOT EXISTS `Users` ( id int NOT NULL AUTO_INCREMENT, name varchar(45) NOT NULL," +
             " lastName varchar(45) DEFAULT NULL, age int NOT NULL, PRIMARY KEY (id))";
-    private static final String SQL_COMMAND_DROP = "drop table Users";
+    private static final String SQL_COMMAND_DROP = "drop table IF EXISTS Users";
     private static final String SQL_COMMAND_GET_USERS = "from User";// указывается не имя таблицы, а имя КЛАССА
     private static final String SQL_COMMAND_CLEAN = "DELETE from Users";
 
@@ -26,11 +27,7 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction = session.beginTransaction();
             session.createSQLQuery(SQL_COMMAND_CREATE).executeUpdate();
             transaction.commit();
-            System.out.println("Таблица создана");
         } catch (Exception e) {
-            if (transaction == null) {
-                transaction.rollback();
-            }
             e.printStackTrace();
 
         }
@@ -45,9 +42,6 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.commit();
             System.out.println("Таблица удалена");
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             e.printStackTrace();
         }
     }
@@ -76,8 +70,9 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.getCurrentSession()) {
             transaction = session.beginTransaction();
             User user = session.get(User.class, id);
-            session.delete(user);
-            System.out.println("пользователь удален");
+            if (user != null) {
+                session.delete(user);
+            System.out.println("пользователь удален");}
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
